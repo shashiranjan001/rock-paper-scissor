@@ -2,7 +2,7 @@
 ARCH ?= amd64
 
 # +optional Image name during docker-build step
-IMG ?= shprakas/rps:$(ARCH)
+IMG ?= shprakas/rps-$(ARCH)
 
 # +optional Port for serving rock-paper-scissor app from docker host
 PORT ?= 8000
