@@ -1,15 +1,19 @@
-from flask import Flask, jsonify
-import hashlib
-app = Flask(__name__) 
+from flask import jsonify
+from . import app
 
-@app.route('/', defaults={'randomStr': ''})
-@app.route('/<path:randomStr>')
-def hello_world(randomStr):
-    out = rockPaperScissor(randomStr)
-    print("Winner = %d" % out)
-    response = jsonify("The winner for string '%s': player %d" % (randomStr, out))
-    response.status_code = 200
-    return response
+
+@app.route('/home')
+def home():
+    return 'Hello World!'
+
+# @app.route('/', defaults={'randomStr': ''}, Methods=["GET"])
+# @app.route('/<path:randomStr>')
+# def deafult_handler(randomStr):
+#     out = rockPaperScissor(randomStr)
+#     print("Winner = %d" % out)
+#     response = jsonify("The winner for string '%s': player %d" % (randomStr, out))
+#     response.status_code = 200
+#     return response 
 
 def rockPaperScissor(randomStr: str) -> int:
     p1_val = hash(randomStr, 31)%3
@@ -35,6 +39,3 @@ def hash(input: str, p: int) -> int:
         hash_so_far = (hash_so_far + (1 + ord(input[i]) - ord('a')) * pow) % modulo
         pow = (pow * p) % modulo
     return hash_so_far 
-
-if __name__ == "__main__":
-    app.run(debug=True)
