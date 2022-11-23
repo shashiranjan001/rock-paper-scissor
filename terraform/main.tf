@@ -1,21 +1,21 @@
-# Kubernetes provider
-# https://learn.hashicorp.com/terraform/kubernetes/provision-eks-cluster#optional-configure-terraform-kubernetes-provider
-# To learn how to schedule deployments and services using the provider, go here: https://learn.hashicorp.com/terraform/kubernetes/deploy-nginx-kubernetes
-# The Kubernetes provider is included in this file so the EKS module can complete successfully. Otherwise, it throws an error when creating `kubernetes_config_map.aws_auth`.
-# You should **not** schedule deployments and services in this workspace. This keeps workspaces modular (one for provision EKS, another for scheduling Kubernetes resources) as per best practices.
+# Kubernetes module
+# host: k8s cluster api-server endpint(provided upon provisioning by aws eks)
+# clustercacertificate: K8s cluster Certificate Authority
 provider "kubernetes" {
   host                   = module.eks.cluster_endpoint
   cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
   token                  = data.aws_eks_cluster_auth.cluster.token
-  # load_config_file       = false
 }
 
+# Specify region to deploy EKS
 provider "aws" {
   region = var.region
 }
 
+# Collect available AZs
 data "aws_availability_zones" "available" {}
 
+# Collect cluster id
 data "aws_eks_cluster" "cluster" {
   name = module.eks.cluster_id
 }
@@ -24,16 +24,20 @@ data "aws_eks_cluster_auth" "cluster" {
   name = module.eks.cluster_id
 }
 
-
+# Set cluster name
 locals {
   cluster_name = "dev-${random_string.suffix.result}"
 }
 
+# Random string to append to cluster name
 resource "random_string" "suffix" {
   length  = 8
   special = false
 }
 
+# K8s resource manifest
+
+# Deployment Manifest
 resource "kubernetes_deployment" "rps" {
   metadata {
     name = "rps"
@@ -42,6 +46,7 @@ resource "kubernetes_deployment" "rps" {
     }
   }
 
+  # 3 replicas for HA
   spec {
     replicas = 3
 
@@ -60,9 +65,15 @@ resource "kubernetes_deployment" "rps" {
 
       spec {
         container {
-          image = "shprakas/rps-amd64:main-47561a9"
+          # Specify image
+          image = "shprakas/rps-amd64:main-d3de255"
           name  = "rock-paper-scissor"
+          # Container serves the application at 12000
+          port {
+            container_port = 12000
+          }
 
+          # Specify resource request
           resources {
             limits = {
               cpu    = "0.5"
@@ -79,6 +90,7 @@ resource "kubernetes_deployment" "rps" {
   }
 }
 
+# K8s LB service manifest
 resource "kubernetes_service" "rps" {
   metadata {
     name = "rps-service"
@@ -88,10 +100,12 @@ resource "kubernetes_service" "rps" {
       app = "rps"
     }
     port {
+      # Port exposed by svc
       port        = 80
+      # Container serves the app at 12000 
       target_port = 12000
     }
-
+    # Service type loadbalancer
     type = "LoadBalancer"
   }
 }
