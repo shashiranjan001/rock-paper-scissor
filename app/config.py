@@ -5,27 +5,27 @@ import random
 
 letters = string.ascii_letters
 
-
+# Base config class
 class BaseConfig(object):
     """base config"""
-    SQLALCHEMY_TRACK_MODIFICATIONS = False
     SECRET_KEY = os.environ.get("secret_key", ''.join(
         [random.choice(string.ascii_letters + string.digits) for n in range(16)]))
 
-
+# Testing config class
+# Sets testing to true
 class TestingConfig(BaseConfig):
     """testing config"""
     TESTING = True
     SQLALCHEMY_DATABASE_URI = ''
     DEBUG = True
 
-
+# Development config class
+# Sets Debug to true
 class DevelopmentConfig(BaseConfig):
     """dev config"""
     DEBUG = True
-    SQLALCHEMY_DATABASE_URI = ''
 
-
+# Production config class
+# Debugging is set off
 class ProductionConfig(BaseConfig):
     """production config"""
-    SQLALCHEMY_DATABASE_URI = os.environ.get("")

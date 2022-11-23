@@ -4,8 +4,9 @@ from app import create_app
 def test_same_winner_for_same_input():
     """
     GIVEN a Flask application configured for testing
-    WHEN the '/' page is requested (GET)
-    THEN check that the response is same for same 
+    WHEN the '/' page is requested (GET) with any string
+    THEN check that the response is same for same request
+    Ex: /random-str should return same winner everytime.
     """
     flask_app = create_app('testing')
 

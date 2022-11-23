@@ -1,0 +1,19 @@
+# Files ignored by Docker
+
+# Ignore github workflow files
+.github/
+
+# Ignore python cache
+.pytest_cache/
+
+# Ignore gitignore
+.gitignore
+
+# Ignore terraform files
+terraform/
+
+# Ignore makefile
+Makefile
+
+# Ignore readme
+README.md
