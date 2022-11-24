@@ -6,9 +6,10 @@
 
 # Quick Start
 - Access application deployed on AWS EKS:
-    - curl -X GET `http://aaa9711e9022e44e1acabcbe8c54360d-1068681464.us-east-1.elb.amazonaws.com/{your-input}`.
-    - Replace `{your-input}` with any random string of your choice.
+    - curl -X GET [http://aaa9711e9022e44e1acabcbe8c54360d-1068681464.us-east-1.elb.amazonaws.com/your-input](http://aaa9711e9022e44e1acabcbe8c54360d-1068681464.us-east-1.elb.amazonaws.com/your-input).
+    - Replace `your-input` with any random string of your choice.
 - Run locally:
+    - Install `pytest==7.2.0` using `pip install pytest=7.2.0` on local machine
     - Execute `make run` from repo's root directory:
         - Runs tests
         - Build docker image
